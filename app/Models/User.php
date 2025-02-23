@@ -51,6 +51,6 @@ class User extends Authenticatable
     }
 
     public function annonces() {
-        return $this->hasOne(Annonces::class);
+        return $this->hasMany(Annonces::class);
     }
 }

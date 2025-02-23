@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Favorites extends Model
 {
     public function users() {
-        return $this->belongsToMany(Favorites::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function annonces() {
+        return $this->belongsTo(Annonces::class);
     }
 }
