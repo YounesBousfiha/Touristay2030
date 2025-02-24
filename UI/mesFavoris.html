@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Favorite Properties - TouriStay2030</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<header class="bg-white shadow-sm fixed w-full z-10">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="/placeholder.svg?height=40&width=40" alt="TouriStay2030 Logo" class="h-10 w-10 mr-3">
+            <span class="text-2xl font-bold text-blue-800">TouriStay2030</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">Home</a>
+            <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">Search</a>
+            <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">My Trips</a>
+            <a href="#" class="bg-blue-800 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300">Log Out</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container mx-auto px-4 pt-24 pb-12">
+    <h1 class="text-3xl font-bold mb-8">Your Favorite Properties</h1>
+
+    <div class="mb-8 flex flex-col md:flex-row justify-between items-center">
+        <div class="w-full md:w-1/2 mb-4 md:mb-0">
+            <input type="text" id="searchInput" placeholder="Search your favorites..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="flex items-center">
+            <label for="sortBy" class="mr-2 text-gray-700">Sort by:</label>
+            <select id="sortBy" class="px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="name">Name</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+                <option value="dateAdded">Date Added</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="favoritesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Favorite property cards will be dynamically inserted here -->
+    </div>
+
+    <div id="noFavorites" class="hidden text-center py-12">
+        <h2 class="text-2xl font-semibold mb-4">You haven't added any favorites yet!</h2>
+        <p class="text-gray-600 mb-6">Start exploring properties and add them to your favorites to see them here.</p>
+        <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-full hover:bg-blue-700 transition duration-300">Explore Properties</a>
+    </div>
+</main>
+
+<script>
+    // Sample favorite properties data (in a real application, this would come from a backend)
+    let favorites = [
+        { id: 1, name: "Luxury Apartment near Stadium", price: 150, location: "Downtown", image: "/placeholder.svg?height=200&width=300", dateAdded: new Date(2023, 5, 15) },
+        { id: 2, name: "Cozy Studio in City Center", price: 80, location: "City Center", image: "/placeholder.svg?height=200&width=300", dateAdded: new Date(2023, 6, 2) },
+        { id: 3, name: "Family-friendly House", price: 200, location: "Suburbs", image: "/placeholder.svg?height=200&width=300", dateAdded: new Date(2023, 4, 28) },
+        { id: 4, name: "Beachfront Villa", price: 300, location: "Coastal Area", image: "/placeholder.svg?height=200&width=300", dateAdded: new Date(2023, 7, 10) },
+        { id: 5, name: "Mountain View Chalet", price: 180, location: "Mountain Resort", image: "/placeholder.svg?height=200&width=300", dateAdded: new Date(2023, 3, 5) },
+    ];
+
+    const favoritesList = document.getElementById('favoritesList');
+    const noFavorites = document.getElementById('noFavorites');
+    const searchInput = document.getElementById('searchInput');
+    const sortBy = document.getElementById('sortBy');
+
+    function renderFavorites() {
+        const searchTerm = searchInput.value.toLowerCase();
+        let filteredFavorites = favorites.filter(property =>
+            property.name.toLowerCase().includes(searchTerm) ||
+            property.location.toLowerCase().includes(searchTerm)
+        );
+
+        // Sort favorites
+        switch (sortBy.value) {
+            case 'name':
+                filteredFavorites.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'priceAsc':
+                filteredFavorites.sort((a, b) => a.price - b.price);
+                break;
+            case 'priceDesc':
+                filteredFavorites.sort((a, b) => b.price - a.price);
+                break;
+            case 'dateAdded':
+                filteredFavorites.sort((a, b) => b.dateAdded - a.dateAdded);
+                break;
+        }
+
+        favoritesList.innerHTML = '';
+        if (filteredFavorites.length === 0) {
+            noFavorites.classList.remove('hidden');
+            favoritesList.classList.add('hidden');
+        } else {
+            noFavorites.classList.add('hidden');
+            favoritesList.classList.remove('hidden');
+            filteredFavorites.forEach(property => {
+                const propertyCard = `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                            <img src="${property.image}" alt="${property.name}" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg mb-2">${property.name}</h3>
+                                <p class="text-gray-600 mb-2">$${property.price} per night</p>
+                                <p class="text-gray-700 mb-4">${property.location}</p>
+                                <div class="flex justify-between items-center">
+                                    <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                                    <button onclick="removeFavorite(${property.id})" class="text-red-600 hover:text-red-800 transition duration-300">
+                                        Remove from Favorites
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                favoritesList.innerHTML += propertyCard;
+            });
+        }
+    }
+
+    function removeFavorite(propertyId) {
+        favorites = favorites.filter(property => property.id !== propertyId);
+        renderFavorites();
+    }
+
+    searchInput.addEventListener('input', renderFavorites);
+    sortBy.addEventListener('change', renderFavorites);
+
+    // Initial render
+    renderFavorites();
+
+    // GSAP animation
+    gsap.from('#favoritesList > div', {
+        opacity: 0,
+        y: 50,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out'
+    });
+</script>
+</body>
+</html>
