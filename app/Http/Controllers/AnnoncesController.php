@@ -49,9 +49,12 @@ class AnnoncesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Annonces $annonces)
+    public function show($id)
     {
-        //
+        $announce = Cache::remember("listings_{$id}", 360, function () use ($id) {
+           return Annonces::findorfail($id);
+        });
+        return view('listing.detail', compact('announce'));
     }
 
     /**
