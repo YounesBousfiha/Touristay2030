@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Listings - TouriStay2030</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<header class="bg-white shadow-sm fixed w-full z-10">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="/placeholder.svg?height=40&width=40" alt="TouriStay2030 Logo" class="h-10 w-10 mr-3">
+            <span class="text-2xl font-bold text-blue-800">TouriStay2030</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">Home</a>
+            <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">My Trips</a>
+            <a href="#" class="bg-blue-800 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300">Log Out</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container mx-auto px-4 pt-24 pb-12">
+    <h1 class="text-3xl font-bold mb-8">World Cup 2030 Accommodations</h1>
+
+    <div class="mb-8 flex flex-col md:flex-row justify-between items-center">
+        <div class="w-full md:w-1/2 mb-4 md:mb-0">
+            <input type="text" id="searchInput" placeholder="Search properties..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="flex items-center">
+            <label for="itemsPerPage" class="mr-2 text-gray-700">Items per page:</label>
+            <select id="itemsPerPage" class="px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="4">4</option>
+                <option value="8" selected>8</option>
+                <option value="12">12</option>
+                <option value="16">16</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="propertyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Property cards will be dynamically inserted here -->
+    </div>
+
+    <div class="mt-8 flex justify-center">
+        <nav class="inline-flex rounded-md shadow">
+            <button id="prevPage" class="px-4 py-2 text-sm font-medium text-blue-800 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50">
+                Previous
+            </button>
+            <span id="currentPage" class="px-4 py-2 text-sm font-medium text-blue-800 bg-white border-t border-b border-gray-300">
+                    Page 1
+                </span>
+            <button id="nextPage" class="px-4 py-2 text-sm font-medium text-blue-800 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50">
+                Next
+            </button>
+        </nav>
+    </div>
+</main>
+
+<script>
+    // Sample property data
+    const properties = [
+        { id: 1, name: "Luxury Apartment near Stadium", price: 150, image: "/placeholder.svg?height=200&width=300" },
+        { id: 2, name: "Cozy Studio in City Center", price: 80, image: "/placeholder.svg?height=200&width=300" },
+        { id: 3, name: "Family-friendly House", price: 200, image: "/placeholder.svg?height=200&width=300" },
+        { id: 4, name: "Modern Loft with City View", price: 120, image: "/placeholder.svg?height=200&width=300" },
+        { id: 5, name: "Beachfront Villa", price: 300, image: "/placeholder.svg?height=200&width=300" },
+        { id: 6, name: "Charming Cottage", price: 90, image: "/placeholder.svg?height=200&width=300" },
+        { id: 7, name: "Penthouse Suite", price: 250, image: "/placeholder.svg?height=200&width=300" },
+        { id: 8, name: "Budget-friendly Hostel", price: 40, image: "/placeholder.svg?height=200&width=300" },
+        { id: 9, name: "Ski Lodge", price: 180, image: "/placeholder.svg?height=200&width=300" },
+        { id: 10, name: "Historic Townhouse", price: 160, image: "/placeholder.svg?height=200&width=300" },
+        { id: 11, name: "Riverside Cabin", price: 110, image: "/placeholder.svg?height=200&width=300" },
+        { id: 12, name: "Golf Resort Suite", price: 220, image: "/placeholder.svg?height=200&width=300" },
+        { id: 13, name: "Urban Treehouse", price: 130, image: "/placeholder.svg?height=200&width=300" },
+        { id: 14, name: "Eco-friendly Bungalow", price: 100, image: "/placeholder.svg?height=200&width=300" },
+        { id: 15, name: "Mountain View Chalet", price: 190, image: "/placeholder.svg?height=200&width=300" },
+        { id: 16, name: "Lakeside Retreat", price: 170, image: "/placeholder.svg?height=200&width=300" },
+    ];
+
+    let currentPage = 1;
+    let itemsPerPage = 8;
+    let filteredProperties = [...properties];
+
+    const propertyList = document.getElementById('propertyList');
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+    const currentPageSpan = document.getElementById('currentPage');
+    const itemsPerPageSelect = document.getElementById('itemsPerPage');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderProperties() {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageProperties = filteredProperties.slice(startIndex, endIndex);
+
+        propertyList.innerHTML = '';
+        pageProperties.forEach(property => {
+            const propertyCard = `
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <img src="${property.image}" alt="${property.name}" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg mb-2">${property.name}</h3>
+                            <p class="text-gray-600">$${property.price} per night</p>
+                            <a href="property-details.html?id=${property.id}" class="mt-4 inline-block bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">View Details</a>
+                        </div>
+                    </div>
+                `;
+            propertyList.innerHTML += propertyCard;
+        });
+
+        currentPageSpan.textContent = `Page ${currentPage}`;
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = endIndex >= filteredProperties.length;
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
+        currentPage = Math.min(currentPage, totalPages);
+        renderProperties();
+    }
+
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderProperties();
+        }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderProperties();
+        }
+    });
+
+    itemsPerPageSelect.addEventListener('change', (e) => {
+        itemsPerPage = parseInt(e.target.value);
+        currentPage = 1;
+        updatePagination();
+    });
+
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        filteredProperties = properties.filter(property =>
+            property.name.toLowerCase().includes(searchTerm)
+        );
+        currentPage = 1;
+        updatePagination();
+    });
+
+    // Initial render
+    renderProperties();
+
+    // GSAP animation
+    gsap.from('#propertyList > div', {
+        opacity: 0,
+        y: 50,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power3.out'
+    });
+</script>
+</body>
+</html>
