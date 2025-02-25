@@ -22,6 +22,7 @@ class AnnoncesFactory extends Factory
             'location' => $this->faker->word(),
             'user_id' => 2,
             'disponibilite' => $this->faker->date(),
+            'number' => $this->faker->randomNumber(),
             'amenities' => json_encode([
                 'wifi' => $this->faker->boolean(),
                 'parking' =>  $this->faker->boolean(),

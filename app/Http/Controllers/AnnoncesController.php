@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Annonces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\View\AnonymousComponent;
 
 class AnnoncesController extends Controller
 {
@@ -15,7 +14,7 @@ class AnnoncesController extends Controller
     public function index()
     {
         $listings = Cache::remember('listings', 600, function () {
-            return Annonces::all();
+            return Annonces::all(); // TODO: Pagination & Updaate the Paginations Buttons
         });
         return view('tourist.explore', compact('listings'));
     }
