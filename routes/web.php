@@ -8,6 +8,7 @@ use App\Mail\TestEmail;
 use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isOwner;
 use App\Http\Middleware\isTourist;
+use App\Http\Controllers\AnnoncesController;
 
 const OWNER_LISTINGS = '/owner/listings';
 
@@ -31,7 +32,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/', function () {
     return view('welcome');
-})->middleware('auth')->name('home');
+})->name('home');
 
 /*Route::get('/send-test-email', function () {
     Mail::to('younesbousfiha96@gmail.com')->send(new TestEmail());
@@ -54,7 +55,7 @@ Route::put(OWNER_LISTINGS . '{id}', []);
 Route::delete(OWNER_LISTINGS . '{id}', []);
 
 // Tourist Routes
-Route::get('tourist/listings', []);
+Route::get('tourist/listings', [AnnoncesController::class, 'index'])->middleware('auth');
 Route::get('/tourist/listings/search', []);
 Route::post('/tourist/favorites/{listingId}', []);
 Route::get('/tourist/favorites', []);
