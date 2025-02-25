@@ -35,4 +35,12 @@ class FavorisController extends Controller
         $favoris->delete();
         return view('favoris.index')->with('success', 'Favoris Got Deleted');
     }
+
+    public function listAllFavoris() {
+        $userId = Auth::id();
+
+        Cache::remember("favoris_{$userId}", 360, function () use($userId) {
+            return Favorites::with('users')->where('user_id', $userId)->get;
+        });
+    }
 }
