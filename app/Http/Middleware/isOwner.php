@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class isPropertaire
+class isOwner
 {
     /**
      * Handle an incoming request.
@@ -16,6 +16,7 @@ class isPropertaire
      */
     public function handle(Request $request, Closure $next): Response
     {
+        //dd(Auth::user());
         if(!Auth::user() || Auth::user()->role_id != 2) {
             return redirect('/unauthorized');
         }

@@ -16,6 +16,7 @@ class isTourist
      */
     public function handle(Request $request, Closure $next): Response
     {
+        //dd($request);
         if(!Auth::user() || Auth::user()->role_id != 3) {
             return redirect('/unauthorized');
         }

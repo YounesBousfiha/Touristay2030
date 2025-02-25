@@ -16,6 +16,7 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        //dd($request);
         if(!Auth::user() || Auth::user()->role_id != 1) {
             return redirect('/unauthorized');
         }
