@@ -17,7 +17,7 @@ class AnnoncesController extends Controller
         $listings = Cache::remember('listings', 600, function () {
             return Annonces::all();
         });
-        return view('listings.index', compact('listings'));
+        return view('tourist.explore', compact('listings'));
     }
 
     /**
