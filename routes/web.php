@@ -1,17 +1,44 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestEmail;
+use App\Http\Middleware\isAdmin;
+use App\Http\Middleware\isOwner;
+use App\Http\Middleware\isTourist;
 
-const OWNER_LISTINGS = '/owner/lintings';
+const OWNER_LISTINGS = '/owner/listings';
+
+
+Route::get('/dashboard', function () {
+    $userId = Auth::user()->role_id;
+    //dd($userId);
+    if($userId === 1) {
+        return view('admin.adminBoard');
+    }  elseif ($userId === 2) {
+        //return "Hello Owner";
+        return view('owner.ownerBoard');
+    } elseif ($userId === 3) {
+        //return "Hello Tourist";
+        return view('tourist.touristBoard');
+    } else {
+        return redirect('/unauthorized');
+    }
+})->middleware('auth')->name('dashboard');
+
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('auth')->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+/*Route::get('/send-test-email', function () {
+    Mail::to('younesbousfiha96@gmail.com')->send(new TestEmail());
+    return response()->json(['message' => 'Test email sent!']);
+});*/
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
