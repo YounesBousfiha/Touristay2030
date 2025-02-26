@@ -56,7 +56,10 @@ Route::delete(OWNER_LISTINGS . '{id}', []);
 
 // Tourist Routes
 Route::get('tourist/listings', [AnnoncesController::class, 'index'])->middleware('auth');
+Route::get('tourist/listings/{id}', [AnnoncesController::class, 'show'])->middleware('auth');
 Route::get('/tourist/listings/search', []);
+
+
 Route::post('/tourist/favorites/{listingId}', []);
 Route::get('/tourist/favorites', []);
 Route::delete('/tourist/favorites/{listingId}', []);
