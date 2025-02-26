@@ -19,9 +19,31 @@
                 </select>
             </div>
         </div>
+        <div>
+            {{ $errors->first() }}
+        </div>
 
         <div id="favoritesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {{ $favorites }}
+            @foreach($favorites as $favorite)
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="https://placehold.co/600x400" alt="name" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">${property.name}</h3>
+                        <p class="text-gray-600 mb-2">$${property.price} per night</p>
+                        <p class="text-gray-700 mb-4">${property.location}</p>
+                        <div class="flex justify-between items-center">
+                            <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        </div>
+                        <form action="/tourist/favorites/{{ $favorite->id }}" method="POST">
+                            @csrf
+                            @method('delete')
+                            <button type="submit" class="text-red-600 hover:text-red-800 transition duration-300">
+                                Remove from Favorites
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
         <div id="noFavorites" class="hidden text-center py-12">
