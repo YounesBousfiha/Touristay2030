@@ -17,7 +17,7 @@ class FavorisController extends Controller
         ]);
         $userId = Auth::id();
 
-        Favorites::create([
+        Favorites::firstOrCreate([
             'annonce_id' => $request->input('announce_id'),
             'user_id' => $userId
         ]);
