@@ -38,8 +38,9 @@
                     <img src="https://placehold.co/600x400" alt="Map" class="w-full h-64 object-cover rounded-lg shadow-md">
                 </div>
                 <div class="mt-4">
-                    <form action="/tourist/favorites/{{ $announce->id }}" method="POST">
+                    <form action="/tourist/favorites" method="POST">
                         @csrf
+                        <input type="hidden" name="announce_id" value="{{ $announce->id }}">
                         <button type="submit" class="text-red-500 hover:text-red-700">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
