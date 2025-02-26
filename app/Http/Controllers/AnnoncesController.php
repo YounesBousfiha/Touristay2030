@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Annonces;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class AnnoncesController extends Controller
@@ -87,11 +88,19 @@ class AnnoncesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-        public function destroy(Annonces $annonces)
+        public function destroy($id)
     {
+        $annonces = Annonces::findOrfail($id);
         $annonces->delete();
         Cache::forget('listings');
 
-        return redirect()->route('listings.index')->with('success', 'Annonce deleted successfully.');
+        return redirect()->route('owner.myproperty')->with('success', 'Annonce deleted successfully.');
+    }
+
+    public function GetMyPropertys() {
+            $userId = Auth::id();
+            $propertys = Annonces::with('users')->where('user_id', $userId)->get();
+
+            return view('owner.myproperty', compact('propertys'));
     }
 }

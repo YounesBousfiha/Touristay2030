@@ -11,7 +11,6 @@ use App\Http\Middleware\isOwner;
 use App\Http\Middleware\isTourist;
 use App\Http\Controllers\AnnoncesController;
 
-const OWNER_LISTINGS = '/owner/listings';
 
 
 Route::get('/dashboard', function () {
@@ -49,16 +48,16 @@ Route::middleware('auth')->group(function () {
 });
 
 // Owner Routes
-Route::post(OWNER_LISTINGS, []);
-Route::get(OWNER_LISTINGS, []);
-Route::get(OWNER_LISTINGS . '{id}', []);
-Route::put(OWNER_LISTINGS . '{id}', []);
-Route::delete(OWNER_LISTINGS . '{id}', []);
+Route::get('/owner/property', [AnnoncesController::class, 'GetMyPropertys'])->middleware('auth')->name('owner.myproperty');
+Route::post('/owner/property', []);
+Route::get('/owner/property/{id}', []);
+Route::put('/owner/property/{id}', []);
+Route::delete('/owner/property/{id}', [AnnoncesController::class, 'destroy'])->middleware('auth');
 
 // Tourist Routes
 Route::get('tourist/listings', [AnnoncesController::class, 'index'])->middleware('auth')->name('listings.index');
 Route::get('tourist/listings/{id}', [AnnoncesController::class, 'show'])->middleware('auth');
-Route::get('/tourist/listings/search', []);
+Route::get('/tourist/listings/search', []); // TODO: Create a Smart Search Bar ( Search by City(Location) or by disbonibilité)
 
 
 Route::post('/tourist/favorites', [FavorisController::class, 'addToFavoris'])->middleware('auth');
