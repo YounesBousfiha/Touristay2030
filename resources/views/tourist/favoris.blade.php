@@ -28,11 +28,11 @@
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <img src="https://placehold.co/600x400" alt="name" class="w-full h-48 object-cover">
                     <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">${property.name}</h3>
-                        <p class="text-gray-600 mb-2">$${property.price} per night</p>
-                        <p class="text-gray-700 mb-4">${property.location}</p>
+                        <h3 class="font-bold text-lg mb-2">{{ $favorite->annonce->title }}</h3>
+                        <p class="text-gray-600 mb-2">${{ $favorite->annonce->number }}per night</p>
+                        <p class="text-gray-700 mb-4">{{ $favorite->annonce->location }}</p>
                         <div class="flex justify-between items-center">
-                            <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                            <a href="../tourist/listings/{{ $favorite->annonce->id }}" class="text-blue-600 hover:underline">View Details</a>
                         </div>
                         <form action="/tourist/favorites/{{ $favorite->id }}" method="POST">
                             @csrf

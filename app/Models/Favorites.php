@@ -10,11 +10,11 @@ class Favorites extends Model
         'annonce_id',
         'user_id'
     ];
-    public function users() {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function annonces() {
+    public function annonce() {
         return $this->belongsTo(Annonces::class);
     }
 }

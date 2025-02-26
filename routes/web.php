@@ -63,7 +63,7 @@ Route::get('/tourist/listings/search', []);
 
 Route::post('/tourist/favorites', [FavorisController::class, 'addToFavoris'])->middleware('auth');
 Route::get('/tourist/favorites', [FavorisController::class, 'index'])->middleware('auth')->name('favorite.index');
-Route::delete('/tourist/favorites/{listingId}', [FavorisController::class, 'removeFromFavoris'])->middleware('auth');
+Route::delete('/tourist/favorites/{favorite_id}', [FavorisController::class, 'removeFromFavoris'])->middleware('auth');
 
 // Admin Routes
 Route::get('/admin/listings', []);

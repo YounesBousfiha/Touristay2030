@@ -42,9 +42,8 @@ class FavorisController extends Controller
 
     public function index() {
         $userId = Auth::id();
-
         $favorites = Cache::remember("favoris_{$userId}", 60, function () use($userId) {
-            return Favorites::with('users')->where('user_id', $userId)->get();
+            return Favorites::with('annonce')->where('user_id', $userId)->get();
         });
 
         return view('tourist.favoris', compact('favorites'));
