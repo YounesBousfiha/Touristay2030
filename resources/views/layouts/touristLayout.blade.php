@@ -25,7 +25,7 @@
             <span class="text-2xl font-bold text-blue-800">TouriStay2030</span>
         </div>
         <div class="hidden md:flex items-center space-x-6">
-            <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">Mes Favoris</a>
+            <a href="/tourist/favorites" class="text-gray-600 hover:text-blue-800 transition duration-300">Mes Favoris</a>
             <a href="/tourist/listings" class="text-gray-600 hover:text-blue-800 transition duration-300">Explore</a>
             <a href="#" class="text-gray-600 hover:text-blue-800 transition duration-300">Reservations</a>
         </div>
