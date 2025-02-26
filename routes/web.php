@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FavorisController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -60,9 +61,9 @@ Route::get('tourist/listings/{id}', [AnnoncesController::class, 'show'])->middle
 Route::get('/tourist/listings/search', []);
 
 
-Route::post('/tourist/favorites/{listingId}', []);
-Route::get('/tourist/favorites', []);
-Route::delete('/tourist/favorites/{listingId}', []);
+Route::post('/tourist/favorites', [FavorisController::class, 'addToFavoris'])->middleware('auth');
+Route::get('/tourist/favorites', [FavorisController::class, 'index'])->middleware('auth')->name('favorite.index');
+Route::delete('/tourist/favorites/{listingId}', [FavorisController::class, 'removeFromFavoris'])->middleware('auth');
 
 // Admin Routes
 Route::get('/admin/listings', []);
