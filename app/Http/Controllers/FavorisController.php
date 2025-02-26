@@ -10,17 +10,18 @@ use Illuminate\Support\Facades\Cache;
 class FavorisController extends Controller
 {
     public function addToFavoris(Request $request) {
-        $request->validate([
-            'annonce_id', 'required|integer',
-        ]);
 
+        $request->validate([
+            'announce_id' => 'required|integer',
+        ]);
         $userId = Auth::id();
 
-        Cache::remember("favoris_{$userId}", 60, function ()  use ($request){
-            return Favorites::create($request->all());
-        });
+        Favorites::create([
+            'annonce_id' => $request->input('announce_id'),
+            'user_id' => $userId
+        ]);
 
-        return view('favoris.index'); // TODO still need to redirect
+        return back()->with('success', 'Added to favorites successfully!');
     }
 
     public function removeFromFavoris(Request $request) {
@@ -33,14 +34,16 @@ class FavorisController extends Controller
         $favoris = Favorites::findOrfail($request->input('favoris_id'));
         Cache::forget("favoris_{$userId}");
         $favoris->delete();
-        return view('favoris.index')->with('success', 'Favoris Got Deleted');
+        return view('favorite.index')->with('success', 'Favoris Got Deleted');
     }
 
-    public function listAllFavoris() {
+    public function index() {
         $userId = Auth::id();
 
-        Cache::remember("favoris_{$userId}", 60, function () use($userId) {
-            return Favorites::with('users')->where('user_id', $userId)->get;
+        $favorites = Cache::remember("favoris_{$userId}", 60, function () use($userId) {
+            return Favorites::with('users')->where('user_id', $userId)->get();
         });
+
+        return view('tourist.favoris', compact('favorites'));
     }
 }
