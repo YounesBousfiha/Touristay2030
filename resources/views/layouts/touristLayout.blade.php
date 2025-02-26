@@ -84,5 +84,6 @@
 </header>
  @yield('favoris')
 @yield('explore')
+@yield('hebergement')
 </body>
 </html>

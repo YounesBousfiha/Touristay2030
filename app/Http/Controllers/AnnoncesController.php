@@ -13,7 +13,7 @@ class AnnoncesController extends Controller
      */
     public function index()
     {
-        $listings = Cache::remember('listings', 600, function () {
+        $listings = Cache::remember('listings', 60, function () {
             return Annonces::all(); // TODO: Pagination & Updaate the Paginations Buttons
         });
         return view('tourist.explore', compact('listings'));
@@ -50,10 +50,10 @@ class AnnoncesController extends Controller
      */
     public function show($id)
     {
-        $announce = Cache::remember("listings_{$id}", 360, function () use ($id) {
+        $announce = Cache::remember("listings_{$id}", 60, function () use ($id) {
            return Annonces::findorfail($id);
         });
-        return view('listing.detail', compact('announce'));
+        return view('tourist.details', compact('announce'));
     }
 
     /**

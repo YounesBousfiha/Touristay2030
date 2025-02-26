@@ -25,8 +25,8 @@
                 <img src="https://placehold.co/600x400" alt="x" class="w-full h-48 object-cover">
                 <div class="p-4">
                     <h3 class="font-bold text-lg mb-2">{{ $entry->title }}</h3>
-                    <p class="text-gray-600">$$ 80</p>
-                    <a href="property-details.html?id={{ $entry->id }}" class="mt-4 inline-block bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">View Details</a>
+                    <p class="text-gray-600">{{ $entry->number }} $</p>
+                    <a href="../tourist/listings/{{ $entry->id }}" class="mt-4 inline-block bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">View Details</a>
                 </div>
             </div>
         @endforeach
