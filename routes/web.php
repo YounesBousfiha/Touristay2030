@@ -55,7 +55,7 @@ Route::put(OWNER_LISTINGS . '{id}', []);
 Route::delete(OWNER_LISTINGS . '{id}', []);
 
 // Tourist Routes
-Route::get('tourist/listings', [AnnoncesController::class, 'index'])->middleware('auth');
+Route::get('tourist/listings', [AnnoncesController::class, 'index'])->middleware('auth')->name('listings.index');
 Route::get('tourist/listings/{id}', [AnnoncesController::class, 'show'])->middleware('auth');
 Route::get('/tourist/listings/search', []);
 

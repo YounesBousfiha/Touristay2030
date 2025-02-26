@@ -11,11 +11,13 @@ class AnnoncesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $listings = Cache::remember('listings', 60, function () {
-            return Annonces::all(); // TODO: Pagination & Updaate the Paginations Buttons
-        });
+        $perPage = $request->validate([
+            'per_page' => 'sometimes|integer|min:4|max:20'
+        ])['per_page'] ?? 4;
+
+        $listings =  Annonces::paginate($perPage);
         return view('tourist.explore', compact('listings'));
     }
 

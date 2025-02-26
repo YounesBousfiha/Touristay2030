@@ -9,13 +9,14 @@
             <input type="text" id="searchInput" placeholder="Search properties..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         <div class="flex items-center">
-            <label for="itemsPerPage" class="mr-2 text-gray-700">Items per page:</label>
-            <select id="itemsPerPage" class="px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="4">4</option>
-                <option value="8" selected>8</option>
-                <option value="12">12</option>
-                <option value="16">16</option>
-            </select>
+            <form action="{{ route('listings.index') }}" method="GET" class="mb-4">
+                <label for="per_page" class="mr-2">Items per page:</label>
+                <select name="per_page" id="per_page" onchange="this.form.submit()" class="p-2 border rounded">
+                    <option value="4" {{ request('per_page') == 4 ? 'selected' : '' }}>4</option>
+                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                </select>
+            </form>
         </div>
     </div>
 
@@ -33,17 +34,7 @@
     </div>
 
     <div class="mt-8 flex justify-center">
-        <nav class="inline-flex rounded-md shadow">
-            <button id="prevPage" class="px-4 py-2 text-sm font-medium text-blue-800 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50">
-                Previous
-            </button>
-            <span id="currentPage" class="px-4 py-2 text-sm font-medium text-blue-800 bg-white border-t border-b border-gray-300">
-                    Page 1
-                </span>
-            <button id="nextPage" class="px-4 py-2 text-sm font-medium text-blue-800 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50">
-                Next
-            </button>
-            </nav>
+        {{ $listings->appends(['per_page' => request('per_page')])->links() }}
     </div>
     </main>
 @endsection
