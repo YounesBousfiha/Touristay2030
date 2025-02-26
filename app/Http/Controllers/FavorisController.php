@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Favorites;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -24,17 +25,19 @@ class FavorisController extends Controller
         return back()->with('success', 'Added to favorites successfully!');
     }
 
-    public function removeFromFavoris(Request $request) {
-        $request->validate([
-            'favoris_id', 'required|integer',
-        ]);
+    public function removeFromFavoris($id) {
+        $validator = Validator::make(
+            ['id' => $id],
+            ['id' => 'required|integer']);
 
+        if($validator->fails()) {
+            return back()->withErrors($validator);
+        }
         $userId = Auth::id();
 
-        $favoris = Favorites::findOrfail($request->input('favoris_id'));
+        $favoris = Favorites::findOrfail($id)->delete();
         Cache::forget("favoris_{$userId}");
-        $favoris->delete();
-        return view('favorite.index')->with('success', 'Favoris Got Deleted');
+        return back()->with('success', 'Favorite has been deleted !');
     }
 
     public function index() {
