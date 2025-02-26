@@ -16,7 +16,7 @@ class FavorisController extends Controller
 
         $userId = Auth::id();
 
-        Cache::remember("favoris_{$userId}", 360, function ()  use ($request){
+        Cache::remember("favoris_{$userId}", 60, function ()  use ($request){
             return Favorites::create($request->all());
         });
 
@@ -39,7 +39,7 @@ class FavorisController extends Controller
     public function listAllFavoris() {
         $userId = Auth::id();
 
-        Cache::remember("favoris_{$userId}", 360, function () use($userId) {
+        Cache::remember("favoris_{$userId}", 60, function () use($userId) {
             return Favorites::with('users')->where('user_id', $userId)->get;
         });
     }
