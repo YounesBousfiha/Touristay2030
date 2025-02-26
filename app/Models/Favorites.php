@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Favorites extends Model
 {
+    protected $fillable = [
+        'annonce_id',
+        'user_id'
+    ];
     public function users() {
         return $this->belongsTo(User::class);
     }
