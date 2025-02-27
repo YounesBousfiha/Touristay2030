@@ -9,7 +9,14 @@
 
         <div id="propertyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($propertys as $property)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div
+                        class="bg-white rounded-lg shadow-md overflow-hidden"
+                        data-id="{{ $property->id }}"
+                        data-title="{{ $property->title }}"
+                        data-description="{{ $property->description }}"
+                        data-disponibilite="{{ $property->disponibilite }}"
+                        data-price="{{ $property->number }}"
+                >
                     <img src="https://placehold.co/600x400/png" alt="placeHolder" class="w-full h-48 object-cover">
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-2">{{ $property->title }}</h3>
@@ -21,6 +28,7 @@
                                 @method('delete')
                                 <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300">Delete</button>
                             </form>
+                            <button type="button" onclick="EditModal(this)"  class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-300">Edit</button>
                         </div>
                     </div>
                 </div>
@@ -77,22 +85,41 @@
                     </div>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="cancelPropertyBtn" onsubmit="" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+                    <button type="button" id="cancelPropertyBtn" onclick="hidePropertyModal()" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
                     <button type="submit" id="savePropertyBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Property</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    {{ $errors->first() }}
+    <div id="updateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm Deletion</h3>
-            <p class="text-gray-700 mb-4">Are you sure you want to delete this property? This action cannot be undone.</p>
-            <div class="flex justify-end">
-                <button id="cancelDeleteBtn" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
-                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">Delete Property</button>
-            </div>
+            <h3 id="modalTitle" class="text-lg font-medium text-gray-900 mb-4">Update Property Information </h3>
+            <form id="propertyForm" action="/owner/updateproperty" method="POST">
+                @csrf
+                <input type="hidden" id="annonce_id" name="annonce_id" value="">
+                <div class="mb-4">
+                    <label for="propertyName" class="block text-gray-700 text-sm font-bold mb-2">Property Name</label>
+                    <input type="text" id="updateName" name="title" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="propertyPrice" class="block text-gray-700 text-sm font-bold mb-2">Price per Night ($)</label>
+                    <input type="number" id="updatePrice" name="number" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="propertyDescription" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <textarea id="updateDescription" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="disponibilite" class="block text-gray-700 text-sm font-bold mb-2">disponibilite)</label>
+                    <input type="date" id="updatedisponibilite" name="disponibilite" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="cancelPropertyBtn"  onclick="hideUpdateModal()"  class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+                    <button type="submit" id="savePropertyBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Property</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -100,38 +127,24 @@
 
         let editingPropertyId = null;
 
+        const updateModal = document.getElementById('updateModal');
+        const propertyModal = document.getElementById('propertyModal');
 
         function showPropertyModal(isEditing = false) {
             modalTitle.textContent = isEditing ? 'Edit Property' : 'Add New Property';
             propertyModal.classList.remove('hidden');
         }
 
+        function hideUpdateModal() {
+            updateModal.classList.add('hidden');
+
+        }
+
         function hidePropertyModal() {
             propertyModal.classList.add('hidden');
-            propertyForm.reset();
-            editingPropertyId = null;
-        }
+            let form = propertyModal.querySelector('form');
 
-        function showDeleteModal(propertyId) {
-            editingPropertyId = propertyId;
-            deleteModal.classList.remove('hidden');
-        }
-
-        function hideDeleteModal() {
-            deleteModal.classList.add('hidden');
-            editingPropertyId = null;
-        }
-
-        function editProperty(propertyId) {
-            const property = properties.find(p => p.id === propertyId);
-            if (property) {
-                editingPropertyId = propertyId;
-                document.getElementById('propertyName').value = property.name;
-                document.getElementById('propertyPrice').value = property.price;
-                document.getElementById('propertyDescription').value = property.description;
-                document.getElementById('propertyImage').value = property.image;
-                showPropertyModal(true);
-            }
+            form.reset();
         }
 
         function deleteProperty() {
@@ -170,9 +183,21 @@
             this.form.submit();
         });
 
+        function EditModal(button) {
+                const property = button.closest('[data-id]');
+                document.getElementById('annonce_id').value = property.dataset.id;
+                document.getElementById('updateName').value = property.dataset.title;
+                document.getElementById('updatePrice').value = property.dataset.price;
+                document.getElementById('updateDescription').value = property.dataset.description;
+                document.getElementById('updatedisponibilite').value = property.dataset.disponibilite;
 
-            // renderProperties();
-            //hidePropertyModal();
+                document.getElementById('updateModal').classList.remove('hidden');
+
+                console.log(property.dataset.title);
+            }
+
+
+            hidePropertyModal();
 
 
         // GSAP animation

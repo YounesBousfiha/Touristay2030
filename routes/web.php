@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/owner/property', [AnnoncesController::class, 'GetMyPropertys'])->middleware('auth')->name('owner.myproperty');
 Route::post('/owner/property', [AnnoncesController::class, 'store'])->middleware('auth');
 Route::get('/owner/property/{id}', []);
-Route::put('/owner/property/{id}', []);
+Route::post('/owner/updateproperty', [AnnoncesController::class, 'update'])->middleware('auth');
 Route::delete('/owner/property/{id}', [AnnoncesController::class, 'destroy'])->middleware('auth');
 
 // Tourist Routes
@@ -68,8 +68,6 @@ Route::delete('/tourist/favorites/{favorite_id}', [FavorisController::class, 're
 Route::get('/admin/listings', []);
 Route::delete('/admin/listings/{id}', []);
 Route::get('/admin/stats', []);
-Route::get('/admin/users', []);
-Route::delete('admin/users/{id}', []);
 
 
 require __DIR__.'/auth.php';

@@ -80,20 +80,21 @@ class AnnoncesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Annonces $annonces)
+    public function update(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric',
+            'number' => 'required|numeric',
             'disponibilite' => 'required|date',
-            'amenities' => 'nullable|json',
         ]);
+
+        $annonces = Annonces::findOrfail($request->annonce_id);
 
         $annonces->update($request->all());
         Cache::forget('listings');
 
-        return redirect()->route('listings.index')->with('success', 'Annonce updated successfully.');
+        return back()->with('success', 'Annonce updated successfully.');
     }
     /**
      * Remove the specified resource from storage.
