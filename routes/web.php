@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
 
 // Owner Routes
 Route::get('/owner/property', [AnnoncesController::class, 'GetMyPropertys'])->middleware('auth')->name('owner.myproperty');
-Route::post('/owner/property', []);
+Route::post('/owner/property', [AnnoncesController::class, 'store'])->middleware('auth');
 Route::get('/owner/property/{id}', []);
 Route::put('/owner/property/{id}', []);
 Route::delete('/owner/property/{id}', [AnnoncesController::class, 'destroy'])->middleware('auth');

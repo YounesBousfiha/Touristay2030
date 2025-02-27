@@ -6,6 +6,7 @@ use App\Models\Annonces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class AnnoncesController extends Controller
 {
@@ -35,15 +36,24 @@ class AnnoncesController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric',
+            'number' => 'required|numeric',
+            'location' => 'required',
             'disponibilite' => 'required|date',
             'amenities' => 'nullable|json',
         ]);
+        $data = $request->all();
+        $data['amenities'] = $request->filled('amenities') ? $request->amenities : null;
 
-        Annonces::create($request->all());
+        $data['user_id'] = Auth::id();
+
+        //dd($data, $request->all());
+
+        Annonces::create($data);
+
         Cache::forget('listings');
 
         return redirect()->route('listings.index')->with('success', 'Annonce created successfully.');

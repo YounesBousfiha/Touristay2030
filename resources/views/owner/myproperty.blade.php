@@ -32,25 +32,52 @@
     <div id="propertyModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <h3 id="modalTitle" class="text-lg font-medium text-gray-900 mb-4">Add New Property</h3>
-            <form id="propertyForm">
+            <form id="propertyForm" action="/owner/property" method="POST">
+                @csrf
                 <div class="mb-4">
                     <label for="propertyName" class="block text-gray-700 text-sm font-bold mb-2">Property Name</label>
-                    <input type="text" id="propertyName" name="propertyName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="propertyName" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="block text-gray-700 text-sm font-bold mb-2">Property location</label>
+                    <input type="text" id="location" name="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div class="mb-4">
                     <label for="propertyPrice" class="block text-gray-700 text-sm font-bold mb-2">Price per Night ($)</label>
-                    <input type="number" id="propertyPrice" name="propertyPrice" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="number" id="propertyPrice" name="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div class="mb-4">
                     <label for="propertyDescription" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
-                    <textarea id="propertyDescription" name="propertyDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    <textarea id="propertyDescription" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
                 </div>
                 <div class="mb-4">
+                    <label for="disponibilite" class="block text-gray-700 text-sm font-bold mb-2">disponibilite)</label>
+                    <input type="date" id="disponibilite" name="disponibilite" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+               {{-- <div class="mb-4">
                     <label for="propertyImage" class="block text-gray-700 text-sm font-bold mb-2">Image URL</label>
                     <input type="url" id="propertyImage" name="propertyImage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div> --}}
+                <div class="mb-4">
+                    {{-- FIND WAY how to Handle those ameties & send as JSON with Boolean Values --}}
+                    <label for="amenities">Select All the Amenities Available</label>
+                    <div class="flex gap-6">
+                        <div class="flex flex-col gap-6">
+                            <label><input class="mr-1" type="checkbox" value="Wifi">Wifi</label>
+                            <label><input class="mr-1" type="checkbox" value="FirePlace">FirePlace</label>
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <label><input class="mr-1" type="checkbox" value="Piscine">Piscine</label>
+                            <label><input class="mr-1" type="checkbox" value="Parking">Parking</label>
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <label><input class="mr-1" type="checkbox" value="Washer">Washer</label>
+                            <label><input class="mr-1" type="checkbox" value="Pet Amenitie">Pet Amenitie</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex justify-end">
-                    <button type="button" id="cancelPropertyBtn" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+                    <button type="button" id="cancelPropertyBtn" onsubmit="" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
                     <button type="submit" id="savePropertyBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Property</button>
                 </div>
             </form>
@@ -118,29 +145,34 @@
         cancelDeleteBtn.addEventListener('click', hideDeleteModal);
         confirmDeleteBtn.addEventListener('click', deleteProperty);
 
-        propertyForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(propertyForm);
-            const newProperty = {
-                id: editingPropertyId || Date.now(),
-                name: formData.get('propertyName'),
-                price: parseFloat(formData.get('propertyPrice')),
-                description: formData.get('propertyDescription'),
-                image: formData.get('propertyImage'),
-            };
+        document.getElementById("propertyForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-            if (editingPropertyId) {
-                const index = properties.findIndex(p => p.id === editingPropertyId);
-                if (index !== -1) {
-                    properties[index] = newProperty;
-                }
-            } else {
-                properties.push(newProperty);
-            }
+            const formData = new FormData(this);
+            const checkboxes = document.querySelectorAll("input[type=checkbox]");
+            const amenities = {};
 
-            renderProperties();
-            hidePropertyModal();
+            checkboxes.forEach(cb => {
+                amenities[cb.value] = cb.checked;
+            });
+
+            formData.append("amenities", JSON.stringify(amenities));
+
+            // Submit the form manually
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => console.log("Success:", data))
+                .catch(error => console.error("Error:", error));
+
+            this.form.submit();
         });
+
+
+            // renderProperties();
+            //hidePropertyModal();
 
 
         // GSAP animation

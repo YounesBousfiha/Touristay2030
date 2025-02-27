@@ -9,6 +9,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Annonces extends Model
 {
     use SoftDeletes, HasFactory;
+
+    protected $fillable = [
+        'title',
+        'description',
+        'number',
+        'location',
+        'disponibilite',
+        'user_id',
+        'amenities'
+    ];
     public function users() {
         return $this->belongsTo(User::class);
     }
