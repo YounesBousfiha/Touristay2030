@@ -114,4 +114,15 @@ class AnnoncesController extends Controller
 
             return view('owner.myproperty', compact('propertys'));
     }
+
+    public function allAnnonces() {
+            $annonces = Annonces::all();
+            return view('admin.manager', compact('annonces'));
+    }
+
+    public function deletebyAdmin($id) {
+        $annonces = Annonces::findOrfail($id);
+        $annonces->delete();
+        return redirect()->route('admin.manager')->with('success', 'Annonce deleted successfully.');
+    }
 }

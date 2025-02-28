@@ -68,9 +68,9 @@ Route::get('/tourist/favorites', [FavorisController::class, 'index'])->middlewar
 Route::delete('/tourist/favorites/{favorite_id}', [FavorisController::class, 'removeFromFavoris'])->middleware('auth');
 
 // Admin Routes
-Route::get('/admin/listings', []);
-Route::delete('/admin/listings/{id}', []);
-Route::get('/admin/stats', [StatsController::class, 'adminBoard'])->middleware('auth')->name('admin.stats');
+Route::get('/admin/listings', [AnnoncesController::class, 'allAnnonces'])->middleware('auth')->name('admin.manager');
+Route::delete('/admin/listings/{id}', [AnnoncesController::class, 'deletebyAdmin'])->middleware('auth')->name('admin.remove');
+//Route::get('/admin/stats', [StatsController::class, 'adminBoard'])->middleware('auth')->name('admin.stats');
 
 
 require __DIR__.'/auth.php';

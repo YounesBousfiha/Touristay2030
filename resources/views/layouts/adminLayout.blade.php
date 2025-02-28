@@ -37,7 +37,7 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.manager')" :active="request()->routeIs('admin.manager')">
-                            {{ __('Stats') }}
+                            {{ __('Annonce Manager') }}
                         </x-nav-link>
                     </div>
                 </div>
@@ -125,6 +125,7 @@
 </header>
 
 <main class="container mx-auto px-4 pt-24 pb-12">
+    @yield('managerboard')
 @yield('statistics')
 @yield('charts')
 </main>
