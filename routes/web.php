@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\FavorisController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StatsController;
+use App\Models\Annonces;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -17,17 +20,17 @@ Route::get('/dashboard', function () {
     $userId = Auth::user()->role_id;
     //dd($userId);
     if($userId === 1) {
-        return view('admin.adminBoard');
+        $annoncesCount = Annonces::count();
+        $usersCount = User::count();
+        return view('admin.adminBoard', compact('annoncesCount', 'usersCount'));
     }  elseif ($userId === 2) {
-        //return "Hello Owner";
         return view('owner.ownerBoard');
     } elseif ($userId === 3) {
-        //return "Hello Tourist";
         return view('tourist.touristBoard');
     } else {
         return redirect('/unauthorized');
     }
-})->middleware('auth')->name('dashboard');
+})->middleware('auth')->name('dashboard'); // TODO: Add Stats Controller Here
 
 
 Route::get('/', function () {
@@ -67,7 +70,7 @@ Route::delete('/tourist/favorites/{favorite_id}', [FavorisController::class, 're
 // Admin Routes
 Route::get('/admin/listings', []);
 Route::delete('/admin/listings/{id}', []);
-Route::get('/admin/stats', []);
+Route::get('/admin/stats', [StatsController::class, 'adminBoard'])->middleware('auth')->name('admin.stats');
 
 
 require __DIR__.'/auth.php';

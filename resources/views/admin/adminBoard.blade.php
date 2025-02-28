@@ -6,7 +6,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Total Registrations</h2>
-            <p class="text-4xl font-bold text-blue-600" id="totalRegistrations">0</p>
+            <p class="text-4xl font-bold text-blue-600" id="totalRegistrations">{{ $usersCount }}</p>
         </div>
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Total Bookings</h2>
@@ -14,7 +14,7 @@
         </div>
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Active Listings</h2>
-            <p class="text-4xl font-bold text-purple-600" id="activeListings">0</p>
+            <p class="text-4xl font-bold text-purple-600" id="activeListings">{{ $annoncesCount }}</p>
         </div>
     </div>
 @endsection
@@ -34,7 +34,7 @@
 
 @push('chartJs')
 <script>
-    const data = {
+    /*const data = {
         registrations: {
             total: 1250,
             byMonth: [80, 120, 180, 220, 150, 200, 300]
@@ -121,7 +121,7 @@
                 }
             }
         }
-    });
+    });*/
 
     gsap.from('main > div', {
         opacity: 0,
