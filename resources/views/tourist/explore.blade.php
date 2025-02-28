@@ -39,7 +39,6 @@
     </main>
     <script>
         document.getElementById("searchInput").addEventListener("input", async function () {
-            //const propertyContainer = document.getElementById('propertyList');
 
             let query = this.value.trim();
             if (query.length < 2) return;
@@ -50,7 +49,6 @@
            let resultsContainer = document.getElementById("propertyList");
             resultsContainer.innerHTML = "";
 
-            console.log(data);
            if (data.length === 0) {
                 resultsContainer.innerHTML = "<li class='p-2 text-gray-500'>No results found</li>";
                 return;

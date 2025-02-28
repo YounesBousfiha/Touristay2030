@@ -72,6 +72,39 @@
             </form>
         </div>
     </div>
+    <div id="updateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 id="modalTitle" class="text-lg font-medium text-gray-900 mb-4">Update Property Information </h3>
+            <form id="propertyForm" action="/owner/property" method="POST">
+                @csrf
+                <input type="hidden" name="annonce_id" value="">
+                <div class="mb-4">
+                    <label for="propertyName" class="block text-gray-700 text-sm font-bold mb-2">Property Name</label>
+                    <input type="text" id="propertyName" name="title" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="block text-gray-700 text-sm font-bold mb-2">Property location</label>
+                    <input type="text" id="location" name="location" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="propertyPrice" class="block text-gray-700 text-sm font-bold mb-2">Price per Night ($)</label>
+                    <input type="number" id="propertyPrice" name="number" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="propertyDescription" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <textarea id="propertyDescription" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="disponibilite" class="block text-gray-700 text-sm font-bold mb-2">disponibilite)</label>
+                    <input type="date" id="disponibilite" name="disponibilite" value="" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="cancelPropertyBtn" onsubmit="" class="mr-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">Cancel</button>
+                    <button type="submit" id="savePropertyBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
@@ -93,6 +126,7 @@
             { id: 3, name: "Family-friendly House", price: 200, description: "Spacious 3-bedroom house with a garden, perfect for families.", image: "/placeholder.svg?height=200&width=300" },
         ];
 
+        const updateModal= document.getElementById('updateModal');
         const propertyList = document.getElementById('propertyList');
         const addPropertyBtn = document.getElementById('addPropertyBtn');
         const propertyModal = document.getElementById('propertyModal');
