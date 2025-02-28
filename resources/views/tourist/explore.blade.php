@@ -37,4 +37,37 @@
         {{ $listings->appends(['per_page' => request('per_page')])->links() }}
     </div>
     </main>
+    <script>
+        document.getElementById("searchInput").addEventListener("input", async function () {
+            //const propertyContainer = document.getElementById('propertyList');
+
+            let query = this.value.trim();
+            if (query.length < 2) return;
+
+            let response = await fetch(`/tourist/listings/search/${query}`);
+            let data = await response.json();
+
+           let resultsContainer = document.getElementById("propertyList");
+            resultsContainer.innerHTML = "";
+
+            console.log(data);
+           if (data.length === 0) {
+                resultsContainer.innerHTML = "<li class='p-2 text-gray-500'>No results found</li>";
+                return;
+            }
+
+            data.forEach(property => {
+                resultsContainer.innerHTML += `
+              <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://placehold.co/600x400" alt="x" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-bold text-lg mb-2">${property.title }</h3>
+                    <p class="text-gray-600">${property.number } $</p>
+                    <a href="../tourist/listings/${ property.id }" class="mt-4 inline-block bg-blue-800 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">View Details</a>
+                </div>
+            </div>
+                `;
+            });
+        });
+    </script>
 @endsection

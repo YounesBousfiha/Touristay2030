@@ -16,6 +16,8 @@
             font-family: 'Playfair Display', serif;
         }
     </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-gray-100">
 <header class="bg-white shadow-sm fixed w-full z-10">

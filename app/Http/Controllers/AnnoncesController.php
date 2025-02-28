@@ -125,4 +125,9 @@ class AnnoncesController extends Controller
         $annonces->delete();
         return redirect()->route('admin.manager')->with('success', 'Annonce deleted successfully.');
     }
+
+    public function search($query) {
+            $results = Annonces::where('location', 'LIKE', "%{$query}%")->orWhere('disponibilite', 'LIKE', "%{$query}%")->get();
+            return response()->json($results);
+    }
 }

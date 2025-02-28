@@ -1,7 +1,6 @@
 @extends('layouts.touristLayout')
 
 @section('favoris')
-
     <main class="container mx-auto px-4 pt-24 pb-12">
         <h1 class="text-3xl font-bold mb-8">Your Favorite Properties</h1>
 

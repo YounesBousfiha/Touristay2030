@@ -60,7 +60,7 @@ Route::delete('/owner/property/{id}', [AnnoncesController::class, 'destroy'])->m
 // Tourist Routes
 Route::get('tourist/listings', [AnnoncesController::class, 'index'])->middleware('auth')->name('listings.index');
 Route::get('tourist/listings/{id}', [AnnoncesController::class, 'show'])->middleware('auth');
-Route::get('/tourist/listings/search', []); // TODO: Create a Smart Search Bar ( Search by City(Location) or by disbonibilité)
+Route::get('/tourist/listings/search/{query}', [AnnoncesController::class, 'search']);
 
 
 Route::post('/tourist/favorites', [FavorisController::class, 'addToFavoris'])->middleware('auth');
