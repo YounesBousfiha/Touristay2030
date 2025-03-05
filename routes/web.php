@@ -4,6 +4,7 @@ use App\Http\Controllers\FavorisController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatsController;
 use App\Models\Annonces;
+use App\Models\Reservations;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,8 @@ Route::get('/dashboard', function () {
     if($userId === 1) {
         $annoncesCount = Annonces::count();
         $usersCount = User::count();
-        return view('admin.adminBoard', compact('annoncesCount', 'usersCount'));
+        $reservations = Reservations::where(['status' => 'paid'])->selectRaw('COUNT(*) as count, SUM(amount) as total_amount')->first();
+        return view('admin.adminBoard', compact('annoncesCount', 'usersCount', 'reservations'));
     }  elseif ($userId === 2) {
         return view('owner.ownerBoard');
     } elseif ($userId === 3) {

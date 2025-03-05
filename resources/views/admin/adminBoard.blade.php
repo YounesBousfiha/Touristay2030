@@ -10,11 +10,15 @@
         </div>
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Total Bookings</h2>
-            <p class="text-4xl font-bold text-green-600" id="totalBookings">0</p>
+            <p class="text-4xl font-bold text-green-600" id="totalBookings">{{ $reservations->count }}</p>
         </div>
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Active Listings</h2>
             <p class="text-4xl font-bold text-purple-600" id="activeListings">{{ $annoncesCount }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Total Revenues</h2>
+            <p class="text-4xl font-bold text-purple-600" id="activeListings">{{ $reservations->total_amount }} $</p>
         </div>
     </div>
 @endsection
