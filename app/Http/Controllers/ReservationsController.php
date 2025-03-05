@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reservations;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationsController extends Controller
 {
@@ -12,7 +13,16 @@ class ReservationsController extends Controller
      */
     public function index()
     {
-        //
+        $bookedDates = Reservations::all();
+        return view('owner.reservations', compact('reservations'));
+    }
+
+    public function getAvalabilities($id) {
+        //$bookDates = Reservations::where('annonce_id', $id)->get();
+        return response()->json([
+            "from" => "2025-03-08",
+            "to" => "2025-03-12",
+        ]);
     }
 
     /**
@@ -28,7 +38,21 @@ class ReservationsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd("Request Content: ", $request->all());
+        $request->validate([
+            'annonce_id' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'amount' => 'required'
+        ]);
+
+
+        $data = $request->all();
+        $data['user_id'] = Auth::id();
+        $reservation = Reservations::create($data);
+        app(PaymentController::class)->checkout($reservation);
+        // TODO: Send Notification the Property Owner
+
     }
 
     /**
