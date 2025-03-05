@@ -26,4 +26,8 @@ class Annonces extends Model
     public function favorites() {
         return $this->belongsToMany(Favorites::class, 'favorites');
     }
+
+    public function reservations() {
+        return $this->hasMany(Reservations::class);
+    }
 }
