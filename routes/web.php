@@ -13,6 +13,8 @@ use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isOwner;
 use App\Http\Middleware\isTourist;
 use App\Http\Controllers\AnnoncesController;
+use \App\Http\Controllers\ReservationsController;
+use App\Http\Controllers\PaymentController;
 
 
 
@@ -42,6 +44,18 @@ Route::get('/', function () {
     return response()->json(['message' => 'Test email sent!']);
 });*/
 
+
+Route::get('/payment', [PaymentController::class, 'index'])->name('payment.form');
+Route::post('/checkout', [PaymentController::class, 'checkout'])->name('payment.checkout');
+Route::get('/success', function () {
+    return "Payment Successful!";
+})->name('payment.success');
+Route::get('/cancel', function () {
+    return "Payment Canceled!";
+})->name('payment.cancel');
+
+Route::get('/reservations/{id}', [ReservationsController::class, 'getAvalabilities']);
+Route::post('/reservations/create', [ReservationsController::class, 'store'])->middleware('auth');
 
 
 Route::middleware('auth')->group(function () {
