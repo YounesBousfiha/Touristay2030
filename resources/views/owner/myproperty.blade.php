@@ -67,7 +67,6 @@
                     <input type="url" id="propertyImage" name="propertyImage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div> --}}
                 <div class="mb-4">
-                    {{-- FIND WAY how to Handle those ameties & send as JSON with Boolean Values --}}
                     <label for="amenities">Select All the Amenities Available</label>
                     <div class="flex gap-6">
                         <div class="flex flex-col gap-6">
@@ -92,7 +91,6 @@
         </div>
     </div>
 
-    {{ $errors->first() }}
     <div id="updateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <h3 id="modalTitle" class="text-lg font-medium text-gray-900 mb-4">Update Property Information </h3>
@@ -124,66 +122,69 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addPropertyBtn = document.getElementById('addPropertyBtn');
+            const cancelPropertyBtn = document.getElementById('cancelPropertyBtn');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const propertyForm = document.getElementById('propertyForm');
+            const updateForm = document.getElementById('updateForm');
+            const updateModal = document.getElementById('updateModal');
+            const propertyModal = document.getElementById('propertyModal');
 
-        let editingPropertyId = null;
+            let editingPropertyId = null;
 
-        const updateModal = document.getElementById('updateModal');
-        const propertyModal = document.getElementById('propertyModal');
+            function showPropertyModal(isEditing = false) {
+                const modalTitle = document.getElementById('modalTitle');
+                modalTitle.textContent = isEditing ? 'Edit Property' : 'Add New Property';
+                propertyModal.classList.remove('hidden');
+            }
 
-        function showPropertyModal(isEditing = false) {
-            modalTitle.textContent = isEditing ? 'Edit Property' : 'Add New Property';
-            propertyModal.classList.remove('hidden');
-        }
+            function hideUpdateModal() {
+                updateModal.classList.add('hidden');
+            }
 
-        function hideUpdateModal() {
-            updateModal.classList.add('hidden');
+            function hidePropertyModal() {
+                propertyModal.classList.add('hidden');
+                propertyForm.reset();
+            }
 
-        }
+            function deleteProperty() {
+                properties = properties.filter(p => p.id !== editingPropertyId);
+                renderProperties();
+                hideDeleteModal();
+            }
 
-        function hidePropertyModal() {
-            propertyModal.classList.add('hidden');
-            let form = propertyModal.querySelector('form');
+            addPropertyBtn.addEventListener('click', () => showPropertyModal());
+            cancelPropertyBtn.addEventListener('click', hidePropertyModal);
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener('click', deleteProperty);
+            }
 
-            form.reset();
-        }
+            propertyForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const checkboxes = document.querySelectorAll("input[type=checkbox]");
+                const amenities = {};
 
-        function deleteProperty() {
-            properties = properties.filter(p => p.id !== editingPropertyId);
-            renderProperties();
-            hideDeleteModal();
-        }
+                checkboxes.forEach(cb => {
+                    amenities[cb.value] = cb.checked;
+                });
 
-        addPropertyBtn.addEventListener('click', () => showPropertyModal());
-        cancelPropertyBtn.addEventListener('click', hidePropertyModal);
-        cancelDeleteBtn.addEventListener('click', hideDeleteModal);
-        confirmDeleteBtn.addEventListener('click', deleteProperty);
+                formData.append("amenities", JSON.stringify(amenities));
 
-        document.getElementById("propertyForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+                // Submit the form manually
+                fetch(this.action, {
+                    method: this.method,
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => console.log("Success:", data))
+                    .catch(error => console.error("Error:", error));
 
-            const formData = new FormData(this);
-            const checkboxes = document.querySelectorAll("input[type=checkbox]");
-            const amenities = {};
-
-            checkboxes.forEach(cb => {
-                amenities[cb.value] = cb.checked;
+                this.form.submit();
             });
 
-            formData.append("amenities", JSON.stringify(amenities));
-
-            // Submit the form manually
-            fetch(this.action, {
-                method: this.method,
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => console.log("Success:", data))
-                .catch(error => console.error("Error:", error));
-
-            this.form.submit();
-        });
-
-        function EditModal(button) {
+            function EditModal(button) {
                 const property = button.closest('[data-id]');
                 document.getElementById('annonce_id').value = property.dataset.id;
                 document.getElementById('updateName').value = property.dataset.title;
@@ -191,22 +192,23 @@
                 document.getElementById('updateDescription').value = property.dataset.description;
                 document.getElementById('updatedisponibilite').value = property.dataset.disponibilite;
 
-                document.getElementById('updateModal').classList.remove('hidden');
+                updateModal.classList.remove('hidden');
+            }
 
-                console.log(property.dataset.title);
+            function hidePropertyModal() {
+                propertyModal.classList.add('hidden');
+                propertyForm.reset();
             }
 
 
-            hidePropertyModal();
-
-
-        // GSAP animation
-        gsap.from('#propertyList > div', {
-            opacity: 0,
-            y: 50,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: 'power3.out'
+            // GSAP animation
+            gsap.from('#propertyList > div', {
+                opacity: 0,
+                y: 50,
+                duration: 0.6,
+                stagger: 0.1,
+                ease: 'power3.out'
+            });
         });
     </script>
 @endsection
