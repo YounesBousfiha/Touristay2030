@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservations;
+use App\Models\User;
+use App\Notifications\SendEmailNotification;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
@@ -28,6 +30,8 @@ class PaymentController extends Controller
 
         $reservation->status = "paid";
         $reservation->save();
-        //Reservations::update($reservation);
+        $user = User::findOrfail($reservation->user_id);
+
+        $user->notify(new SendEmailNotification($reservation));
     }
 }

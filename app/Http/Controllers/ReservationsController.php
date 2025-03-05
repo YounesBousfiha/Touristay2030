@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservations;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\SendEmailNotification;
+
 
 class ReservationsController extends Controller
 {
@@ -51,8 +54,6 @@ class ReservationsController extends Controller
         $data['user_id'] = Auth::id();
         $reservation = Reservations::create($data);
         app(PaymentController::class)->checkout($reservation);
-        // TODO: Send Notification the Property Owner
-
     }
 
     /**
