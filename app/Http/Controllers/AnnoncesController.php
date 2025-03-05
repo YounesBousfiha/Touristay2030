@@ -47,7 +47,6 @@ class AnnoncesController extends Controller
         ]);
         $data = $request->all();
         $data['amenities'] = $request->filled('amenities') ? $request->amenities : null;
-
         $data['user_id'] = Auth::id();
 
         //dd($data, $request->all());
